@@ -1,0 +1,8 @@
+{
+  "name": "voiceban-interface-tools",
+  "private": true,
+  "description": "Regenerate INTERFACE.md from the live VoiceBan chain metadata",
+  "dependencies": {
+    "@polkadot/api": "^10"
+  }
+}
