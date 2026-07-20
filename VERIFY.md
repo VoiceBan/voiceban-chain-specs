@@ -42,6 +42,12 @@ This is the key point: the chain is **self-describing**. The metadata your clien
 ```bash
 git clone https://github.com/VoiceBan/voiceban-chain-specs
 cd voiceban-chain-specs/tools
+```
+
+Expected anchors for mainnet (launched 2026-07-20): genesis hash
+`0x0dcfcb171cbfe70864b424c25cf1848a131541d687ca3a049381600b84aedc2c`, runtime `node-vb` v200.
+
+```bash
 npm install
 node generate-interface.js ../INTERFACE.regenerated.md
 diff ../INTERFACE.md ../INTERFACE.regenerated.md

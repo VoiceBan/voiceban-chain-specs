@@ -75,8 +75,18 @@ Because these are runtime pallets (not app-server features), every profile, grou
 
 ## Governance & treasury
 
-`Council`, `Treasury`, `Bounties` and `AssetRate` provide collective decision-making and on-chain funding of network development. `Funding` handles designated funding flows.
+`Council`, `Treasury`, `Bounties` and `AssetRate` provide collective decision-making and on-chain funding of network development. `Funding` handles the onboarding-grants pool (pool-funded transfers — grants never mint supply).
+
+Since the 2026-07-20 mainnet launch the runtime also carries VoiceBan's own governance/economics pallets:
+
+- **`VbanUpgrade`** — the runtime-upgrade authority: Council approval (2-of-3) → public timelock → forkless `setCode`. The chain evolves without resets, and no upgrade can happen silently or instantly.
+- **`VbanEcon`** — every economic knob (post fees, vote costs, grant amount, staking targets…) is on-chain storage settable by the governance origin. Tuning the economy is a transaction, not a runtime upgrade.
+- **`VbanTipping`** — paid tips and report-stakes for the social layer.
+- **`VbanEpoch`** — the epoch-based Promotions Pool (creator rewards, referrals) with council-settled budgets, vesting and clawback.
+- **`Utility`** — standard call batching (one signature for multi-step operations).
+
+Economics at launch: staking inflation ~2–4% (ideal stake 50%), unclaimed inflation and **all EVM transaction fees route to the Treasury** (fees are not burned), usernames are 3–32 characters, and staking is available directly from Ethereum wallets via the `0x800` precompile.
 
 ## Administrative capability — stated plainly
 
-The runtime includes the standard `Sudo` pallet (visible in [INTERFACE.md](INTERFACE.md) — we don't hide it). Every use of it is, by construction, a public on-chain extrinsic: it cannot act silently. See [SECURITY.md](SECURITY.md) for the custody audit covering this, and the roadmap for its retirement as the validator set decentralizes.
+The runtime includes the standard `Sudo` pallet (visible in [INTERFACE.md](INTERFACE.md) — we don't hide it), but **no sudo key exists on mainnet** — it is permanently uncallable. The only privileged path is the `VbanUpgrade` council + timelock flow above, which is by construction public and delayed: every use is an on-chain extrinsic announced before it enacts. See [SECURITY.md](SECURITY.md) for the custody audit and the launch-resolution of all previously disclosed items.

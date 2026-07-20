@@ -5,11 +5,11 @@
 
 | | |
 |---|---|
-| Chain | Live |
-| Runtime | `node-vb` v103 (tx v2) |
+| Chain | VoiceBan |
+| Runtime | `node-vb` v200 (tx v2) |
 | Node version | 0.1.0-unknown |
 | Properties | `{"isEthereum":false,"ss58Format":null,"tokenDecimals":[18],"tokenSymbol":["VBAN"],"SS58Prefix":"9956"}` |
-| Metadata version | V16 |
+| Metadata version | V14 |
 
 ## Pallets
 
@@ -47,12 +47,17 @@
 | 29 | [BaseFee](#pallet-basefee) | 2 | 2 | 3 | 0 |
 | 30 | [HotfixSufficients](#pallet-hotfixsufficients) | 1 | 0 | 0 | 0 |
 | 32 | [BagsList](#pallet-bagslist) | 3 | 7 | 2 | 2 |
-| 33 | [Funding](#pallet-funding) | 2 | 3 | 2 | 4 |
+| 33 | [Funding](#pallet-funding) | 2 | 3 | 2 | 5 |
 | 34 | [TransactionStorage](#pallet-transactionstorage) | 3 | 7 | 9 | 2 |
+| 35 | [Utility](#pallet-utility) | 8 | 0 | 8 | 1 |
 | 39 | [VbanFees](#pallet-vbanfees) | 1 | 1 | 2 | 2 |
 | 40 | [VbanProfiles](#pallet-vbanprofiles) | 2 | 4 | 2 | 1 |
 | 41 | [VbanGroups](#pallet-vbangroups) | 4 | 6 | 4 | 5 |
 | 42 | [VbanPosts](#pallet-vbanposts) | 5 | 12 | 5 | 3 |
+| 43 | [VbanEcon](#pallet-vbanecon) | 1 | 1 | 1 | 0 |
+| 44 | [VbanTipping](#pallet-vbantipping) | 3 | 4 | 3 | 0 |
+| 45 | [VbanEpoch](#pallet-vbanepoch) | 4 | 7 | 5 | 2 |
+| 46 | [VbanUpgrade](#pallet-vbanupgrade) | 3 | 2 | 4 | 3 |
 
 ### Pallet: System
 
@@ -512,6 +517,21 @@
 
 **Events:** `Stored`, `Renewed`, `ProofChecked`, `AccountAuthorized`, `AccountAuthorizationRefreshed`, `PreimageAuthorized`, `PreimageAuthorizationRefreshed`, `ExpiredAccountAuthorizationRemoved`, `ExpiredPreimageAuthorizationRemoved`
 
+### Pallet: Utility
+
+**Extrinsics (callable functions):**
+
+- `Utility.batch(calls)` — Send a batch of dispatch calls
+- `Utility.as_derivative(index, call)` — Send a call through an indexed pseudonym of the sender
+- `Utility.batch_all(calls)` — Send a batch of dispatch calls and atomically execute them
+- `Utility.dispatch_as(as_origin, call)` — Dispatches a function call with a provided origin
+- `Utility.force_batch(calls)` — Send a batch of dispatch calls
+- `Utility.with_weight(call, weight)` — Dispatch a function call with a specified weight
+- `Utility.if_else(main, fallback)` — Dispatch a fallback call in the event the main call fails to execute
+- `Utility.dispatch_as_fallible(as_origin, call)` — Dispatches a function call with a provided origin
+
+**Events:** `BatchInterrupted`, `BatchCompleted`, `BatchCompletedWithErrors`, `ItemCompleted`, `ItemFailed`, `DispatchedAs`, `IfElseMainSuccess`, `IfElseFallbackCalled`
+
 ### Pallet: VbanFees
 
 **Extrinsics (callable functions):**
@@ -559,6 +579,53 @@
 **Storage items:** `NextPostId`, `Posts`, `TotalPostCount`, `PostReactions`, `ViewedPosts`, `CommentCount`, `AccountPostCount`, `AccountPosts`, `GlobalFeedCount`, `GlobalFeedBySeq`, `CommentSeqCount`, `CommentsByParent`
 
 **Events:** `PostCreated`, `PostDeleted`, `ReactionCreated`, `ReactionDeleted`, `PostViewed`
+
+### Pallet: VbanEcon
+
+**Extrinsics (callable functions):**
+
+- `VbanEcon.set_params(upd)` — Update any subset of the economic parameters
+
+**Storage items:** `EconParams`
+
+**Events:** `ParamsUpdated`
+
+### Pallet: VbanTipping
+
+**Extrinsics (callable functions):**
+
+- `VbanTipping.tip(post, amount)` — Tip a post's owner
+- `VbanTipping.report_post(post)` — File a report against a post, reserving report_stake
+- `VbanTipping.resolve_report(id, upheld)` — Resolve a report (moderation authority = the econ admin origin, i.e
+
+**Storage items:** `PostTips`, `TipsReceived`, `NextReportId`, `Reports`
+
+**Events:** `TipSent`, `PostReported`, `ReportResolved`
+
+### Pallet: VbanEpoch
+
+**Extrinsics (callable functions):**
+
+- `VbanEpoch.bind_referrer(referrer)` — Bind the caller to the referrer who brought them
+- `VbanEpoch.settle_epoch(payouts)` — Settle this epoch's merit payouts from the pool (council origin)
+- `VbanEpoch.claim()` — Pay out every matured pending reward of the caller from the pool account
+- `VbanEpoch.clawback(who, epoch)` — Void an unclaimed (typically still-vesting) reward — the clawback for later-flagged fakes
+
+**Storage items:** `CurrentEpoch`, `EpochStartedAt`, `ReferrerOf`, `ReferralCount`, `Pending`, `EpochSpent`, `EarnedInEpoch`
+
+**Events:** `EpochAdvanced`, `ReferrerBound`, `EpochSettled`, `Claimed`, `ClawedBack`
+
+### Pallet: VbanUpgrade
+
+**Extrinsics (callable functions):**
+
+- `VbanUpgrade.schedule(call)` — Queue call for Root execution after the standard delay
+- `VbanUpgrade.fast_track(call)` — Queue call with the EMERGENCY delay
+- `VbanUpgrade.cancel(id)` — Withdraw a queued call before it executes.
+
+**Storage items:** `NextId`, `Queue`
+
+**Events:** `Scheduled`, `Cancelled`, `Executed`, `Undecodable`
 
 
 ---

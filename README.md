@@ -1,6 +1,6 @@
 # VoiceBan Network — Public Specifications & Transparency Documentation
 
-**VoiceBan** is a live, decentralized Layer-1 blockchain purpose-built for censorship-resistant social interaction — profiles, groups, posts and payments recorded on-chain, secured by Nominated Proof-of-Stake, with full Ethereum (EVM) and WebAssembly smart-contract support.
+**VoiceBan** is a live, decentralized Layer-1 blockchain — **mainnet launched 2026-07-20** (genesis `0x0dcfcb17…aedc2c`, runtime v200, sudo-less with timelocked public governance upgrades). It is purpose-built for censorship-resistant social interaction — profiles, groups, posts and payments recorded on-chain, secured by Nominated Proof-of-Stake, with full Ethereum (EVM) and WebAssembly smart-contract support.
 
 - 🌐 Website: [voiceban.io](https://voiceban.io)
 - 🔭 Live explorer: [explorer.voiceban.com](https://explorer.voiceban.com)
@@ -17,7 +17,7 @@ This repository is the **public specification and verification kit** for the Voi
 
 | Document | What it proves |
 |---|---|
-| [INTERFACE.md](INTERFACE.md) | The complete runtime interface — all 38 pallets, every extrinsic/storage/event — generated from live chain metadata |
+| [INTERFACE.md](INTERFACE.md) | The complete runtime interface — all 43 pallets, every extrinsic/storage/event — generated from live chain metadata |
 | [VERIFY.md](VERIFY.md) | Step-by-step: verify the chain, its runtime, validators and state yourself with standard tools |
 | [ARCHITECTURE.md](ARCHITECTURE.md) | Network design: consensus, account model, staking, EVM + WASM contracts, on-chain social layer |
 | [CHAIN.md](CHAIN.md) | Chain parameters: token, decimals, chain ID, endpoints |

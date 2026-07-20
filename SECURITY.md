@@ -21,9 +21,10 @@ Three independent audit passes were run over the node and runtime implementation
 | Capability | Status |
 |---|---|
 | Move VBAN from your `0x` address | **Only your private key.** No admin path exists |
-| `force_transfer`, `force_set_balance`, forced asset operations, `set_code` (runtime upgrade) | Gated to Root/Council origins — **currently uncallable by any signed account** |
-| `Sudo` pallet | Compiled in but **keyless — no sudo key is set**. It cannot be invoked by anyone |
-| Bare Root origin | **Unreachable** — there is no on-chain dispatcher (no democracy/scheduler path) that can synthesize Root, and the Council cannot |
+| `force_transfer`, `force_set_balance`, forced asset operations | Gated to Root origin — **uncallable by any signed account** |
+| `set_code` (runtime upgrade) | **Only** via the public upgrade path: Council approval (2-of-3) → public timelock → forkless `setCode`. Every pending upgrade is visible on-chain before enactment |
+| `Sudo` pallet | Compiled in but **keyless — no sudo key is set, permanently** (verified at genesis, 2026-07-20). It cannot be invoked by anyone |
+| Bare Root origin | Reachable **only** through the timelocked council upgrade path above — never silently, never instantly |
 | Staking precompile (`0x800`) | Acts **only on the caller's own account** (`msg.sender`) |
 | EVM → native balance bridging | `WithdrawOrigin = Never` — no EVM path into the balances pallet |
 | A block-producing validator | Can order or delay transactions in blocks it authors; **cannot forge a transfer** from a key it does not hold |
@@ -34,13 +35,30 @@ Three independent audit passes were run over the node and runtime implementation
 - **No silent upgrades.** Runtime changes emit `System.CodeUpdated`; the runtime hash is publicly extractable at any time ([VERIFY.md](VERIFY.md) §4-5).
 - **Self-describing surface.** The chain cannot expose functionality that is absent from its own public metadata. [INTERFACE.md](INTERFACE.md) *is* the complete list.
 
-## Known launch-phase items — stated openly
+## Launch-phase items — resolved at mainnet launch (2026-07-20)
 
-We publish these rather than hide them (they are also disclosed on [voiceban.io/how](https://voiceban.io/how)):
+Earlier revisions of this document disclosed three open launch-phase items. All three were closed by the
+mainnet launch cut:
 
-1. **Genesis key concentration.** In the current pre-launch phase, the initial supply allocation and validator power derive from team-held genesis keys. This affects *those* accounts and consensus operation — it has no path into user wallets. Rotation to fresh, offline-generated keys is a launch-gate requirement.
-2. **Onboarding faucet.** The welcome-funding mechanism is enabled by default and hard-capped by the runtime (10M VBAN total), with per-address, per-IP and rate caps at the service layer. Its administrative off-switch is being moved to a reachable governance origin as part of the launch cut.
-3. **Sudo end-state.** Sudo is inert today (keyless). Its permanent fate — removal, or replacement by a real governance Root path — is a launch-cut decision that will be made and published before mainnet designation.
+1. **Genesis key rotation — DONE.** The mainnet genesis was generated from fresh, offline-held keys. The
+   pre-launch development chain — and every key that had ever been exposed during development — was retired
+   with it. No historical key controls any mainnet account or validator.
+2. **Onboarding grants — now pool-funded with a governance switch.** Welcome grants pay out of a fixed,
+   publicly visible 1B VBAN pool by *transfer* (no minting), with a claim cap and an on/off switch reachable
+   by the governance origin.
+3. **Sudo end-state — resolved: keyless, permanently.** There is no sudo key on mainnet. The upgrade
+   authority is a Council (2-of-3) whose approved upgrades enact only after a **public on-chain timelock**.
+   This is a stronger claim than a dead sudo key: not "no backdoor we promise," but **no *hidden* backdoor
+   is possible** — every change is a public, delayed, on-chain event anyone can observe before it happens.
+
+## Remaining honest disclosures
+
+- **Small validator set.** Mainnet launched with 3 genesis validators. GRANDPA finality requires >⅔ of the
+  set online; with 3 validators, one going offline pauses finality (block production continues) until it
+  returns. This dissolves as community validators join.
+- **Council composition.** The council currently has a single member (the network owner) and will expand to
+  independent members by on-chain motion. Until then, treasury and upgrade decisions are effectively
+  team decisions — we say so here rather than call it decentralized governance.
 
 ## Reporting
 

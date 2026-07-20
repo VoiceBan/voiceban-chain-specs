@@ -6,11 +6,41 @@ Connection and identity parameters for the VoiceBan network. Every value below i
 
 | Parameter | Value |
 |---|---|
-| Chain name | `Live` |
+| Chain name | `VoiceBan` (chain id `vban_launch`) |
+| Mainnet launch | **2026-07-20** (genesis event — see below) |
+| Genesis hash | `0x0dcfcb171cbfe70864b424c25cf1848a131541d687ca3a049381600b84aedc2c` |
 | Runtime spec | `node-vb` |
-| Runtime version | v103 (transaction version 2) |
-| Metadata version | V16 |
+| Runtime version | v200 (transaction version 2) |
+| Metadata version | V14 |
 | Consensus | BABE (block production) + GRANDPA (finality), Nominated Proof-of-Stake |
+| Root / sudo | **None** — no sudo key exists; upgrades go through governance (see below) |
+
+## Genesis allocation (2026-07-20)
+
+The launch genesis was generated from fresh, offline-held keys (the pre-launch development chain and all
+its keys were retired at the cut):
+
+| Account | Allocation |
+|---|---|
+| Network owner (cold wallet) | 90,000,000,000 VBAN |
+| Creators / promotions pool (`vbn/prom` pallet account) | 9,000,000,000 VBAN |
+| Onboarding grants pool (`vbn/fund` pallet account) | 1,000,000,000 VBAN |
+| Genesis validators (3 × 10,000, of which 1,000 bonded each) | 30,000 VBAN |
+
+Welcome grants are **paid from the grants pool by transfer** — they do not mint new supply.
+
+## Runtime upgrades — public and timelocked
+
+There is no sudo key. Runtime upgrades follow a single path, entirely on-chain and public:
+**Council approval (2-of-3 threshold) → public timelock delay → forkless `setCode`.**
+Every pending upgrade is visible on-chain before it takes effect; state is never reset.
+
+## Boot nodes
+
+| Node | Multiaddr |
+|---|---|
+| vban1 | `/dns/vban1.voiceban.com/tcp/30333/p2p/12D3KooWEmPJ9AsM6NdBWyTHyBbeT527HfmQqaToUCcQrMy3ZJCm` |
+| vban2 | `/dns/vban2.voiceban.com/tcp/30333/p2p/12D3KooWKKjHhE45yWCb4xcqkKMadQvYJCbHsmqiAFpDn2VGszDg` |
 
 ## Token
 
